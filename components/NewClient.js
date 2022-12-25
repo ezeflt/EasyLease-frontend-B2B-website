@@ -26,7 +26,7 @@ function NewClient() {
   const [alertInterlocutor, setAlertInterlocutor] = useState(false);
   console.log(newClientAdded);
   const deleteInt = (i) => {
-    setInterlocutors(interlocutors.filter((_, index) => index !== i));
+    setInterlocutors(interlocutors.filter((_, index) => index !== i)); // renvoie moi un tableau intelrocutor sans l'index qui est == i
   };
 
   const modalContent = interlocutors.map((e, i) => {
@@ -37,6 +37,7 @@ function NewClient() {
             {e.firstname} {e.name} {e.poste}
             <FontAwesomeIcon
               onClick={() => deleteInt(i)}
+              // i est l'index donc quand je delete avec l'index en parametre, je renvoie un nouveau tableau interlocutor cette index
               className={style.interlocutorDeleter}
               icon={faXmark}
               key={i}
@@ -47,8 +48,8 @@ function NewClient() {
     );
   });
 
-  const handleModalInterlocutor = () => {
-    setIsModalVisible(!isModalVisible);
+  const handleModalInterlocutor = () => { 
+    setIsModalVisible(!isModalVisible); // ouvre et ferme la modal au click de modifier l'interlocutor avec modalContent
   };
   const dropDownInterlocutors = interlocutors.map((e, i) => {
     return (
@@ -63,7 +64,8 @@ function NewClient() {
     );
   });
 
-  const handleNewInterlocutorSubmit = () => {
+  const handleNewInterlocutorSubmit = () => { 
+  // ajout d'intelocutor => spred operator => ajout d'objet dans le tableau avec la valeur des champs de saisie
     setInterlocutors((interlocutor) => [
       ...interlocutor,
       {
@@ -97,7 +99,7 @@ function NewClient() {
           clientBirth: Date.now(),
         }),
       })
-        .then((response) => {
+        .then((response) => { //pourquoi response .ok ??
           console.log(response);
           if (!response.ok) {
             console.log("Error fetching data");
@@ -111,19 +113,19 @@ function NewClient() {
             setAddress("");
             setNumberofEmployees(0);
             setChiffreAffaire("");
-            setNewClientAdded(true);
+            setNewClientAdded(true); // ouvre modal => <span> client ajouté </span>
           }
-        })
+        })// catch explication 
         .catch((error) => {
           console.log(error);
         });
     } else {
-      setAlertInterlocutor(true);
+      setAlertInterlocutor(true); // ouvre modal => <span> alerte pas d'interlocutor </span>
     }
   };
 
   useEffect(() => {
-    setInterlocutors([]);
+    setInterlocutors([]); // à demander ??????
   }, []);
 
   return (
@@ -168,13 +170,13 @@ function NewClient() {
                   value={numberOfEmployees}
                 ></input>
               </div>
-              {dropDownInterlocutors.length > 0 && (
+              {dropDownInterlocutors.length > 0 && ( // affiche de la liste d'interlocutor si le tableau est supperireur à 0
                 <div className={style.interlocutorItemListContainer}>
                   {dropDownInterlocutors}
                   <br />
 
                   <span
-                    onClick={() => handleModalInterlocutor()}
+                    onClick={() => handleModalInterlocutor()} // set (isVisible) et ouvre la modal 
                     className={style.textLink}
                   >
                     Modifier les interlocuteurs
@@ -183,8 +185,9 @@ function NewClient() {
               )}
               {isModalVisible && (
                 <div className={style.modal}>
-                  <Modal closable={false} footer={null} open={isModalVisible}>
+                  <Modal closable={false} footer={null} open={isModalVisible}> 
                     <div className={style.modalContainer}>
+  {/* modalContent affiche la même liste d'interlocutor mais avec la possibilité de le delete du tableau d'interlocutor  */}
                       {modalContent}
                       <button
                         className={style.button}
@@ -196,7 +199,7 @@ function NewClient() {
                   </Modal>
                 </div>
               )}
-              {newClientAdded && (
+              {newClientAdded && ( // si true avec un setter alors affiche le span
                 <div className={style.modal}>
                   <Modal closable={false} footer={null} open={newClientAdded}>
                     <div className={style.modalContainer}>

@@ -72,7 +72,8 @@ function Contrat() {
     const contratEndFormattedDate = contratEnd.toLocaleDateString();
     return (
       <div className={style.data} key={i}>
-        <span className={style.texte}>Nom du client : {item.client?.name}</span>
+        {/* pourquoi le ? à item.client.name */}
+        <span className={style.texte}>Nom du client : {item.client?.name}</span> 
         <span className={style.texte}>Type d'équipements : {item.type}</span>
         <span className={style.texte}>Montant financé : {item.amount} €</span>
         <span className={style.texte}>Marge : {item.marge} %</span>
