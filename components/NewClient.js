@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from "react";
 import style from "../styles/NewClient.module.css";
 import Navbar from "./Navbar";
@@ -9,6 +10,7 @@ import Header from "./Header";
 
 function NewClient() {
   // Définir l'état local pour les champs de formulaire
+  let BACKEND_ADDRESS = "https://easylease-backend.vercel.app";
 
   const user = useSelector((state) => state.user.value);
   const [name, setName] = useState("");
@@ -31,7 +33,7 @@ function NewClient() {
 
   const modalContent = interlocutors.map((e, i) => {
     return (
-      <div id={e} className={style.modalInterlocutorContainer}>
+      <div key={i} id={e} className={style.modalInterlocutorContainer}>
         <ul>
           <li>
             {e.firstname} {e.name} {e.poste}
@@ -86,7 +88,7 @@ function NewClient() {
 
   const handleNewClientSubmit = () => {
     if (interlocutors.length > 0) {
-      fetch("http://localhost:3000/client/uploadClient", {
+      fetch(`${BACKEND_ADDRESS}/client/uploadClient`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,14 +101,9 @@ function NewClient() {
           clientBirth: Date.now(),
         }),
       })
-        .then((response) => { //pourquoi response .ok ??
-          console.log(response);
-          if (!response.ok) {
-            console.log("Error fetching data");
-          }
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
+          console.log("TRUE, DATAS FROM CREATION CLIENT", data);
           if (data.result) {
             console.log("Client bien ajouté");
             setName("");
@@ -131,7 +128,7 @@ function NewClient() {
   return (
     <div className={style.maincontainer}>
       <Navbar />
-      <Header name="New Client" />
+      <Header name="Nouveau Client" />
       <div className={style.container}>
         <div className={style.form}>
           <div className={style.newClientContainer}>
@@ -144,7 +141,7 @@ function NewClient() {
                 onChange={(e) => setName(e.target.value)}
                 value={name}
               ></input>
-              <label>Address</label>
+              <label>Adresse</label>
               <input
                 className={style.input + " " + style.inputNewClient}
                 placeholder="Address"
@@ -203,7 +200,7 @@ function NewClient() {
                 <div className={style.modal}>
                   <Modal closable={false} footer={null} open={newClientAdded}>
                     <div className={style.modalContainer}>
-                      <span>Nouveau client ajouté !</span>
+                      <span>✅ Nouveau client ajouté ! ✅</span>
                       <button
                         className={style.button}
                         onClick={() => setNewClientAdded(false)}
@@ -266,17 +263,17 @@ function NewClient() {
           {alertInterlocutor && (
             <span className={style.alert}>
               {" "}
-              Ajoutez d'abord un interlocuteur !
+              ❌ Ajoutez d'abord un interlocuteur ! ❌
             </span>
           )}
         </div>
         <div className={style.containerBtn}>
-        <button
-          className={style.button}
-          onClick={() => handleNewClientSubmit()}
-        >
-          Création du client
-        </button>
+          <button
+            className={style.button}
+            onClick={() => handleNewClientSubmit()}
+          >
+            Création du client !
+          </button>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ function ClientProfil() {
   const [chiffre, setchiffre] = useState("");
   const [interlocutor, setinterlocutor] = useState("");
   const [contrat, setContrat] = useState("");
-  const backend_adress = "http://localhost:3000";
+  const backend_adress = "https://easylease-backend.vercel.app";
 
   const clientBirthDate = new Date(clientBirth); // à demander
   const clientBirthDateFormated = clientBirthDate.toLocaleDateString(); // méthod qui convertie les dates en string convertir 
@@ -192,21 +192,22 @@ function ClientProfil() {
               <div className={style.docsContainer}>
                 <h3>Documents joints : </h3>
                 {contratData}
-                <button
+                {/* <button
                   className={style.buttonModal}
                   onClick={() => handleCloseModal()} // ferme une modal qui sert à rien (succes et update)
                 >
                   Ajouter un document
-                </button>
+                </button> */}
               </div>
             </div>
-            <div className={style.ButtonContainer}></div>
+            {/* <div className={style.ButtonContainer}></div> */}
           </div>
         </div>
       </div>
-      <Modal onCancel={() => handleModal()} open={addDocModal} footer={null}>
+      <Modal className={style.modalUpdateClient} onCancel={() => handleModal()} open={addDocModal} footer={null}>
         <div>
           <div className="modal-modifier">
+            <p>Nom entreprise : </p>
             <input
               type="text"
               placeholder="Nom entreprise"
@@ -215,6 +216,7 @@ function ClientProfil() {
             />
           </div>
           <div className="modal-modifier">
+          <p>Ancienneté du client : </p>
             <input
               type="text"
               placeholder="ancienneté"
@@ -223,6 +225,7 @@ function ClientProfil() {
             />
           </div>
           <div className="modal-modifier">
+          <p>Adresse : </p>
             <input
               type="text"
               placeholder="addresse"
@@ -231,6 +234,7 @@ function ClientProfil() {
             />
           </div>
           <div className="modal-modifier">
+          <p>Nombre d'employés : </p>
             <input
               type="text"
               placeholder="nombre d'employés"
@@ -239,6 +243,7 @@ function ClientProfil() {
             />
           </div>
           <div className="modal-modifier">
+          <p>Chiffre d'affaires : </p>
             <input
               type="text"
               placeholder="CA"

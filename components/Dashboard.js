@@ -2,22 +2,25 @@ import React, { useState, useEffect } from "react";
 import styles from "../styles/Dashboard.module.css";
 import Navbar from "./Navbar";
 import Header from "./Header";
+import { useSelector } from "react-redux";
 
 import { Doughnut } from "react-chartjs-2";
-import Chart from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
+// eslint-disable-next-line no-unused-vars
+import Chart from "chart.js/auto";
 
 function Dashboard() {
   const [datasContrats, setDatasContrats] = useState([]);
+  const user = useSelector((state) => state.user.value);
 
-  let BACKEND_ADDRESS = "http://localhost:3000";
+  let BACKEND_ADDRESS = "https://easylease-backend.vercel.app";
 
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/contrat/allContrat`)
+    fetch(`${BACKEND_ADDRESS}/contrat/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("DATA FROM DASHBOARD FROM ALL CONTRATS", data);
-        setDatasContrats(data.contrat);
+        console.log("DATA FROM DASHBOARD FROM TOKEN CONTRATS", data);
+        setDatasContrats(data.userInfos.contrats);
       });
   }, []);
 

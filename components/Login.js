@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useState } from "react";
 import styles from "../styles/Login.module.css";
 import { Modal } from "antd";
@@ -11,7 +12,7 @@ function Login() {
   // URL de redirection pour les conditions d'utilisations //
   const url = "https://google.com";
   // Adresse du backend
-  const BACKEND_ADDRESS = "http://localhost:3000";
+  const BACKEND_ADDRESS = "https://easylease-backend.vercel.app";
 
   // Récuperation du login et MDP pour la connexion (user déja créer) //
   const [username, setUsername] = useState("");
@@ -26,10 +27,13 @@ function Login() {
   const [emailErrorMain, setEmailErrorMain] = useState(false);
   const [emailErrorModal, setEmailErrorModal] = useState(false);
   const [userInnexistant, setUserInnexistant] = useState(false);
+  const [modalCreationSuccess, setModalCreationSuccess] = useState(false);
+  const [modalLoginSuccess, setModalLoginSuccess] = useState(false);
   //
 
   // Check si l'email est valide //
   const EMAIL_REGEX =
+    // eslint-disable-next-line no-useless-escape
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   // Savoir si l'user a le droit de cliquer sur "Première connexion" //
@@ -42,7 +46,9 @@ function Login() {
   // Redirection dynamique vers la page contrat pour le moment, elle redirigera vers la page dashboard a terme //
   const router = useRouter();
   if (user.token) {
-    router.push("/dashboard");
+    setTimeout(() => {
+      router.push("/dashboard");
+    }, 1000);
   }
 
   // Click sur "Première connexion", la modale s'ouvre //
@@ -72,6 +78,10 @@ function Login() {
     setForgetPasswordModal(true);
   };
 
+  const handleClick = () => {
+    window.open('/Conditions.pdf', '_blank');
+  };
+
   const handleSubmit = () => {
     console.log("Sign in submit");
     if (EMAIL_REGEX.test(username)) {
@@ -82,15 +92,15 @@ function Login() {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
-            dispatch(
-              login({
-                token: data.token,
-                email: data.email,
-                poste: data.poste,
-                isAdmin: data.isAdmin,
-              })
-            );
+          data.result && setModalLoginSuccess(true);
+          dispatch(
+            login({
+              token: data.token,
+              email: data.email,
+              poste: data.poste,
+              isAdmin: data.isAdmin,
+            })
+          );
           console.log("CONNECTE");
           if (!data.result) {
             console.log("DATAS DE SUBMIT =>", data);
@@ -115,15 +125,15 @@ function Login() {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
-            dispatch(
-              login({
-                token: data.token,
-                email: data.email,
-                poste: data.poste,
-                isAdmin: data.isAdmin,
-              })
-            );
+          data.result && setModalCreationSuccess(true);
+          dispatch(
+            login({
+              token: data.token,
+              email: data.email,
+              poste: data.poste,
+              isAdmin: data.isAdmin,
+            })
+          );
           console.log("CONNECTE");
         });
     } else {
@@ -181,7 +191,7 @@ function Login() {
               Connexion
             </button>
           </div>
-          <a href={url} target="_blank" className={styles.textContent}>
+          <a href="#" className={styles.textContent} rel="noreferrer" onClick={handleClick}>
             Conditions d'utilisation
           </a>
         </div>
@@ -261,6 +271,30 @@ function Login() {
         >
           <p style={{ fontSize: 18, textAlign: "center" }}>
             ❌ Utilisateur innexistant ! ❌
+          </p>
+        </Modal>
+        <Modal
+          onCancel={() => setModalCreationSuccess(false)}
+          open={modalCreationSuccess}
+          footer={null}
+        >
+          <p style={{ fontSize: 18, textAlign: "center" }}>
+            ✅ Utilisateur créer et connecté ! ✅
+          </p>
+          <p style={{ fontSize: 18, textAlign: "center" }}>
+            Redirection en cours ....
+          </p>
+        </Modal>
+        <Modal
+          onCancel={() => setModalLoginSuccess(false)}
+          open={modalLoginSuccess}
+          footer={null}
+        >
+          <p style={{ fontSize: 18, textAlign: "center" }}>
+            ✅ Utilisateur connecté ! ✅
+          </p>
+          <p style={{ fontSize: 18, textAlign: "center" }}>
+            Redirection en cours ....
           </p>
         </Modal>
       </div>
