@@ -6,11 +6,11 @@ import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from "react-redux";
 import { addId } from '../reducers/scenario';
 import Header from './Header';
-import { Line } from 'react-chartjs-2';
 import { removeId } from "../reducers/scenario";
-import {CategoryScale, LinearScale, ArcElement, PointElement, LineElement} from 'chart.js'; 
+import {CategoryScale, LinearScale, ArcElement, PointElement, LineElement} from 'chart.js'; // est-ce que tu utilise chart js ?
+import { Line } from 'react-chartjs-2'; //import de graphique en ligne de chart2
 import { Chart } from 'chart.js';
-Chart.register(CategoryScale, LinearScale, ArcElement, PointElement, LineElement); 
+Chart.register(CategoryScale, LinearScale, ArcElement, PointElement, LineElement); // pourquoi cette ligne ? les import sont au dessus
 
 const dataGraphique = {
   labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre', 'Janvier', 'Février', 'Mars'],
@@ -19,12 +19,12 @@ const dataGraphique = {
       label: 'Valeur en euros',
       data: [100000, 85000, 72250, 61962.5, 53165.625, 45641.40625, 39312.203125, 33866.671875, 29148.9453125, 25079.21875, 21491.171875, 18368.5478515625, 10000, 5000, 0],
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 1,
-      pointBackgroundColor: '#fff',
+      borderColor: 'rgba(255, 99, 132, 1)', //border color de la ligne dynamique du graphique
+      borderWidth: 1, // border ligne graphique dynamique
+      pointBackgroundColor: '#fff', // background color de la boule qui à comme data les valeurs dynamique
       pointBorderColor: 'rgba(255, 99, 132, 1)',
-      pointHoverBackgroundColor: 'rgba(255, 99, 132, 1)',
-      pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+      pointHoverBackgroundColor: 'rgba(255, 99, 132, 1)', // background hover point dynamique
+      pointHoverBorderColor: 'rgba(255, 99, 132, 1)', // border color hover point dynamique
     },
     {
       label: 'Ligne horizontale',
@@ -32,44 +32,20 @@ const dataGraphique = {
       borderColor: 'green',
       borderWidth: 2,
       pointRadius: 0,
-      fill: false,
+      fill: false, // ?
     },
   ],
 };
 
-
+// scale par default ??
 const optionsGraphique = {
   responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    xAxes: [{
-      type: 'time',
-      time: {
-        unit: 'month',
-      },
-    }],
-    yAxes: [{
-      ticks: {
-        beginAtZero: true,
-      },
-      gridLines: {
-        drawOnChartArea: false,
-      },
-      scaleLabel: {
-        display: true,
-        labelString: 'Valeur en euros',
-      },
-      scaleOverride: true,
-      scaleSteps: 8,
-      scaleStepWidth: 10000,
-      scaleStartValue: 0,
-    }],
-  },
+  maintainAspectRatio: false, // maintient le rapport hauteur/largeur du graphique & il est false comme ça il s'adapte pas à la taill des data mais à la taille du graphique défini en style
 };
 
 
 
-  
+
 
 function NewScenario() {
 
@@ -78,52 +54,56 @@ function NewScenario() {
   const date = new Date();
 
   const idScenario = useSelector((state) => state.scenario.value);
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value); // faire passer les push en backend 
 
   // const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 
   let BACKEND_ADDRESS = "http://localhost:3000";
-  const [selectionClient, setSelectionClient] = useState("");
-  const [clientFromCard, setClientFromCard] = useState("")
-  const [creationDate, setCreationDate] = useState(date.toISOString().substring(0, 10));
-  const [scenarioName, setScenarioName] = useState("");
-  const [equipementType, setEquipementType] = useState("");
-  const [locationDuration, setLocationDuration] = useState("");
-  const [amountFinance, setAmountFinance] = useState("");
-  const [startDateLocation, setStartDateLocation] = useState("");
-  const [endDateLocation, setEndDateLocation] = useState("");
-  const [residualValue, setResidualValue] = useState("");
-  const [margeValue, setMargeValue] = useState("");
+  const [selectionClient, setSelectionClient] = useState(""); // setter(string) value du select de selection client
+  const [clientFromCard, setClientFromCard] = useState("") // setter(string) client récuperer grace à l'id au click de la carte
+  const [creationDate, setCreationDate] = useState(date.toISOString().substring(0, 10)); // valeur création de date
+  const [scenarioName, setScenarioName] = useState(""); // setter(string) valeur nom du scenario
+  const [equipementType, setEquipementType] = useState(""); // setter(string) valeur select type d'équipement
+  const [locationDuration, setLocationDuration] = useState(""); // setter(string) valeur select durée de location
+  const [amountFinance, setAmountFinance] = useState(""); // setter(string) valeur montant financé
+  const [startDateLocation, setStartDateLocation] = useState(""); // setter(string) valeur du début de location
+  const [endDateLocation, setEndDateLocation] = useState(""); // setter(string) valeur de fin de location
+  const [residualValue, setResidualValue] = useState(""); // setter(string) valeur de la valeur residuelle
+  const [margeValue, setMargeValue] = useState(""); // setter(string) valeur de la marge
 
-  const [oldScenario, setOldScenario] = useState(false);
-  const [modalSaveSuccess, setModalSaveSuccess] = useState(false);
+  const [oldScenario, setOldScenario] = useState(false); // setter (booléan) de old scenario pour changer le contenue de la page si le scenario est vieux
 
-  const [modalSaveFailed, setModalSaveFailed] = useState(false);
-  const [modalDeleteSuccess, setModalDeleteSuccess] = useState(false);
-  const [modalDeleteFailed, setModalDeleteFailed] = useState(false);
-  const [modalModifierFailed, setModalModifierFailed] = useState(false);
-  const [modalModifierSuccess, setModalModifierSuccess] = useState(false);
-  const [modalSubmitSuccess, setModalSubmitSuccess] = useState(false);
-  const [modalSubmitFailed, setModalSubmitFailed] = useState(false);
-  const [clientList, setClientList] = useState([]);
-  const [oneClient, setOneClient] = useState([]);
-  const [selectionInterlocuteur, setSelectionInterlocuteur] = useState({});
-  const [selectClientById, setSelectClientById] = useState("");
-  const [clientNameFromFetch, setClientNameFromFetch] = useState("");
-  const [deleteBtn, setDeleteBtn] = useState(false);
-  const [modalSaveInterloc, setModalSaveInterloc] = useState(false);
+  const [modalSaveSuccess, setModalSaveSuccess] = useState(false); // setter (booléan) modal save scenario (result.true) ✅
+  const [modalSaveFailed, setModalSaveFailed] = useState(false); // setter (booléan) modal save scenario (else POST) ❌
+
+  const [modalDeleteSuccess, setModalDeleteSuccess] = useState(false); // setter (booléan) modal delete (result.true) ✅
+  const [modalDeleteFailed, setModalDeleteFailed] = useState(false); // setter (booléan) modale delete (esle DELETE) ❌
+
+  const [modalModifierFailed, setModalModifierFailed] = useState(false); // setter (booléan) modale update (result.true) ✅
+  const [modalModifierSuccess, setModalModifierSuccess] = useState(false); // setter (booléan) modale update (else PUT) ❌
+
+  const [modalSubmitSuccess, setModalSubmitSuccess] = useState(false); // setter (booléan) modale Add Contrat (reslut.true) ✅
+  const [modalSubmitFailed, setModalSubmitFailed] = useState(false); // setter (booléan) modale Add Contrat (else POST) ❌
+
+  const [clientList, setClientList] = useState([]);// setter tableau pour récuperer le tableau de list de client et le map
+  const [oneClient, setOneClient] = useState([]);// setter pour récuperer les infos du client et map les interlocutor
+  const [selectionInterlocuteur, setSelectionInterlocuteur] = useState({}); // setter de la valeur du select dans la selection d'interlocutor
+  const [selectClientById, setSelectClientById] = useState(""); // pourquoi ByID
+  const [clientNameFromFetch, setClientNameFromFetch] = useState(""); // 
+  const [deleteBtn, setDeleteBtn] = useState(false); // deleteBtn c'est quoi ?
+  const [modalSaveInterloc, setModalSaveInterloc] = useState(false); // setter (booléan) modal save interlocuor
   const [interlocFilter, setInterlocFilter] = useState([]);
   const [modalInterlocError, setModalInterlocError] = useState(false);
   const [addInterlocutorModal, setAddInterlocutorModal] = useState(false);
 
-  const [interlocName, setInterlocName] = useState("");
-  const [phoneNumber, setPhoneNumer] = useState("");
-  const [interlocFirstName, setInterlocFirstname] = useState("");
-  const [interlocMail, setInterlocMail] = useState("");
-  const [interlocJob, setInterlocJob] = useState("");
+  const [interlocName, setInterlocName] = useState(""); // setter (string) nom d'interlocutor /modal ajout interlocutor 
+  const [phoneNumber, setPhoneNumer] = useState(""); // setter (string) Numero de tel d'interlocutor /modal ajout interlocutor 
+  const [interlocFirstName, setInterlocFirstname] = useState(""); // setter (string) Prénom d'interlocutor /modal ajout interlocutor 
+  const [interlocMail, setInterlocMail] = useState(""); // setter (string) Email d'interlocutor /modal ajout interlocutor 
+  const [interlocJob, setInterlocJob] = useState(""); // setter (string) job d'interlocutor /modal ajout interlocutor 
 
-  const [addInterlocutorSucccess, setAddInterlocutorSuccess] = useState(false);
-  const [addInterlocutorFailed, setAddInterlocutorFailed] = useState(false);
+  const [addInterlocutorSucccess, setAddInterlocutorSuccess] = useState(false); // setter (booléan) modal POST interlocutor (reslut.true) ✅
+  const [addInterlocutorFailed, setAddInterlocutorFailed] = useState(false); // setter (booléan) modal POST interlocutor (else POST) ❌
 
   // console.log(idScenario)
   // Check si le scenario est déja enregistrer en BDD//
@@ -131,16 +111,16 @@ function NewScenario() {
 
   useEffect(() => {
     if (selectionClient) {
-      fetch(`${BACKEND_ADDRESS}/client/${selectionClient}`)
+      fetch(`${BACKEND_ADDRESS}/client/${selectionClient}`) // recupere nom du client
       .then(response => response.json())
       .then(data => {
-        setOneClient([data.client])
-        setSelectClientById(data.client._id);
-        setClientNameFromFetch(data.client.name);
+        setOneClient([data.client]) // toute les infos du client
+        setSelectClientById(data.client._id); // juste l'id du client à demander
+        setClientNameFromFetch(data.client.name); // récuperer le nom du client pour l'affichage
         setInterlocFilter([])
       })
     }
-   }, [selectionClient, deleteBtn]);
+   }, [selectionClient, deleteBtn]); // pourquoi delete Btn
 
   // console.log("ONE CLIENT =>", oneClient);
 
@@ -150,7 +130,7 @@ function NewScenario() {
       .then(response => response.json())
       .then(data => {
         //console.log("Liste des clients", data.clients);
-        setClientList(data.clientsInfos.clients)
+        setClientList(data.clientsInfos.clients) // si tu trouve pas l'id set la liste des data pour menu déroulant
       })
     }
     if (idScenario._id) {
@@ -158,16 +138,16 @@ function NewScenario() {
       fetch(`${BACKEND_ADDRESS}/scenary/${idScenario._id}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("DATA SCENARIO !!!!!!!!!!!", data);
+          // console.log("DATA SCENARIO !!!!!!!!!!!", data);
           if (data.result){
-            console.log(data);
+            // console.log(data);
             setOldScenario(data.result);
-            fetch(`${BACKEND_ADDRESS}/client/id/${data.scenary.client}`)
+            fetch(`${BACKEND_ADDRESS}/client/id/${data.scenary.client}`) // l'id du client
             .then(response => response.json())
             .then(data => {
               // console.log("DATA 2 EME FETCH", data);
-             setClientFromCard(data.client.name);
-             setOneClient([data.client])
+             setClientFromCard(data.client.name); // recup le nom
+             setOneClient([data.client]) // recup toute les infos d'un client
             })
             setSelectClientById(data.scenary.client)
             setCreationDate(data.scenary.creationDate.slice(0, 10));
@@ -182,7 +162,9 @@ function NewScenario() {
           }
         });
     }
-  }, [deleteBtn]);
+  }, [deleteBtn]); // delete button c'est quoi ??
+
+
   // console.log("ID SCENARIO.ID" , idScenario._id);
   // console.log("START DATE =>", startDateLocation);
   // console.log("CLIENT SELECTION =>", selectionClient);
@@ -220,7 +202,7 @@ function NewScenario() {
 
   const deletion = () => {
     // console.log("Click delete");
-    fetch(`${BACKEND_ADDRESS}/scenary/${idScenario._id}`, {
+    fetch(`${BACKEND_ADDRESS}/scenary/${idScenario._id}`, { // comment tu récupere l'id de ton scenario à l'enregistrement ??
       method: "DELETE",
     })
       .then((response) => response.json())
@@ -283,7 +265,7 @@ function NewScenario() {
   // console.log("SCENARIO NAME +>>>>>>>>>>>>>", scenarioName);
   // console.log("SELECTION INTERLOC", selectionInterlocuteur);
 
-  const beforeSubmit = () => {
+  const beforeSubmit = () => { // button valider le scenario en contrat (ouvre modal avant la validation)
     setModalSaveInterloc(true);
   };
 
@@ -316,7 +298,7 @@ function NewScenario() {
     })
       .then((response) =>response.json())
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         if (data.result) {
           setModalSaveInterloc(false);
           setModalSubmitSuccess(true);
@@ -347,7 +329,7 @@ function NewScenario() {
       });
   };
 
-  const cancelModal = () => {
+  const cancelModal = () => { // fermer toute les modals
     setModalSaveSuccess(false);
     setModalSaveFailed(false);
     setModalDeleteFailed(false);
@@ -357,18 +339,18 @@ function NewScenario() {
     setModalSaveInterloc(false);
   };
 
-  const handleOkContrat = () => {
-    setModalSubmitSuccess(false);
-    router.push('/allContrat')
+  const handleOkContrat = () => { // apres avoir validé le scenario en contrat 
+    setModalSubmitSuccess(false); // je ferme la modal
+    router.push('/allContrat') // je suis redirigé sur all Contrat
   };
 
-  const handleSaveScenario = () => {
+  const handleSaveScenario = () => { // fermer la modal succes
     setModalSaveSuccess(false);
   };
 
-  const handleDeleteOk = () => {
+  const handleDeleteOk = () => { // close modale succes delete quand le scenario est bien supprimer
       setModalDeleteSuccess(false);
-      setDeleteBtn(!deleteBtn);
+      setDeleteBtn(!deleteBtn);// pourquoi delete btn
       dispatch(removeId())
   }
 
@@ -405,11 +387,10 @@ let header;
     }
   };
 
-  const handleCancelModalInterloc = () => {
+  const handleCancelModalInterloc = () => { // modal choisir un interlocutor avant de valider en contrat 
     setSelectionInterlocuteur("");
     setModalSaveInterloc(false);
   }
-
   useEffect(() => {
       setInterlocFilter(oneClient[0] ? oneClient[0].interlocutor.filter(e => e.name === selectionInterlocuteur): null);
    },[selectionInterlocuteur])
@@ -419,18 +400,18 @@ let header;
   // console.log("creation date", creationDate);
   // console.log("Client selectionné =>", selectionClient);
 
-  const addInterlocutor = () => {
+  const addInterlocutor = () => { // modale creation d interlocutor
     setModalSaveInterloc(false);
     setAddInterlocutorModal(true);
   };
 
-  const interlocutorModal = () => {
+  const interlocutorModal = () => { // cancel modale creation d'interlocutor
     setAddInterlocutorModal(false);
     setModalSaveInterloc(true);
   };
  
   const saveInterlocuteur = () => {
-    fetch(`${BACKEND_ADDRESS}/client/addInterlocutor`, {
+    fetch(`${BACKEND_ADDRESS}/client/addInterlocutor`, { // on crée un interlocutor qui sera directement push à un client grace à son id et il sera automatiquement disponible
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -445,7 +426,7 @@ let header;
     .then(response => response.json())
     .then(data => {
       if (data.result) {
-        setDeleteBtn(!deleteBtn);
+        setDeleteBtn(!deleteBtn); // pourquoi delete button ??
         setAddInterlocutorSuccess(true);
         setAddInterlocutorModal(false);
       } else {
@@ -472,7 +453,7 @@ let header;
         <Navbar styleScenario={{backgroundColor: "#2A9C90"}}/>
         <Header name ={header}/>
         <div className={style.container}>
-          <div className={style.leftSection}>
+          <div className={style.leftSection}> 
            {oldScenario && <p className={style.nomClient}>Nom du client : {clientNameFromFetch !== "" ? `${clientNameFromFetch}` :`${clientFromCard}`}</p>}
           {!oldScenario && <select
               className={style.input}
@@ -672,8 +653,9 @@ let header;
                     className={style.button + ' ' + style.btnInterModal}
                     onClick={() => saveInterlocuteur()}
                   >
-                    Enregistrer
-                  </button>
+                    {/* j'enregistre mon interlocutor en Bdd */}
+                    Enregistrer 
+                  </button> 
                 </div>
               </div>
             </div>
