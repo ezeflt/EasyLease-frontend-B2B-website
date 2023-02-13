@@ -135,7 +135,7 @@ function NewScenario() {
       fetch(`${BACKEND_ADDRESS}/client/${selectionClient}`) // recupere nom du client
       .then(response => response.json())
       .then(data => {
-        setOneClient([data.client]) // toute les infos du client
+        setOneClient([data.client]) // recup toute les infos du client pour map les interlocuteurs
         setSelectClientById(data.client._id); // juste l'id du client à demander
         setClientNameFromFetch(data.client.name); // récuperer le nom du client pour l'affichage
         setInterlocFilter([])
@@ -249,6 +249,7 @@ function NewScenario() {
 
   const save = () => {
     // console.log("Click enregistrer");
+    // post en bdd un nouveau scenario
     fetch(`${BACKEND_ADDRESS}/scenary/new/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -408,13 +409,7 @@ function NewScenario() {
     setModalSaveInterloc(false);
   }
   useEffect(() => {
-    setInterlocFilter(
-      oneClient[0]
-        ? oneClient[0].interlocutor.filter(
-            (e) => e.name === selectionInterlocuteur
-          )
-        : null
-    );
+    setInterlocFilter( oneClient[0]? oneClient[0].interlocutor.filter((e) => e.name === selectionInterlocuteur): null );
   }, [selectionInterlocuteur]);
 
   //   console.log("INTERLOC FILTER =>", interlocFilter);
@@ -433,7 +428,8 @@ function NewScenario() {
   };
 
   const saveInterlocuteur = () => {
-    fetch(`${BACKEND_ADDRESS}/client/addInterlocutor`, { // on crée un interlocutor qui sera directement push à un client grace à son id et il sera automatiquement disponible
+    fetch(`${BACKEND_ADDRESS}/client/addInterlocutor`, {
+       // on crée un interlocutor qui sera directement push à un client grace à l'id du client ce sera automatiquement disponible
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

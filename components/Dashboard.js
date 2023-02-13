@@ -25,10 +25,13 @@ function Dashboard() {
   }, []);
 
   console.log("DATA CONTRATS =>", datasContrats);
-  let CArealise = 0;
+
   let objCA = 20000000;
   let objMarge = 0.1 * objCA;
+
   let margeRea = 0;
+  let CArealise = 0;
+
   if (datasContrats.length > 0) {
     for (let items of datasContrats) {
       margeRea += (items.marge / 100) * items.amount;
@@ -93,36 +96,36 @@ function Dashboard() {
     ],
   };
 
-  const optionsBarCa = {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-            suggestedMax: 500000,
-          },
-        },
-      ],
-    },
-    annotation: {
-      drawTime: "afterDraw", // définit le moment où la ligne sera dessinée
-      annotations: [
-        {
-          type: "line",
-          mode: "horizontal",
-          scaleID: "y-axis-0",
-          value: 450000,
-          borderColor: "blue", // couleur de la ligne : bleue
-          borderWidth: 2,
-          label: {
-            content: "Objectif de chiffre d'affaires",
-            enabled: true,
-            position: "right",
-          },
-        },
-      ],
-    },
-  };
+  // const optionsBarCa = {
+  //   // scales: {
+  //   //   yAxes: [
+  //   //     {
+  //   //       ticks: {
+  //   //         beginAtZero: true,
+  //   //         suggestedMax: 500000,
+  //   //       },
+  //   //     },
+  //   //   ],
+  //   // },
+  //   // annotation: {
+  //   //   drawTime: "afterDraw", // définit le moment où la ligne sera dessinée
+  //   //   annotations: [
+  //   //     {
+  //   //       type: "line",
+  //   //       mode: "horizontal",
+  //   //       scaleID: "y-axis-0",
+  //   //       value: 450000,
+  //   //       borderColor: "blue", // couleur de la ligne : bleue
+  //   //       borderWidth: 2,
+  //   //       label: {
+  //   //         content: "Objectif de chiffre d'affaires",
+  //   //         enabled: true,
+  //   //         position: "right",
+  //   //       },
+  //   //     },
+  //   //   ],
+  //   // },
+  // };
 
   console.log("CA", CArealise);
   console.log("MARGE REA", margeRea);
@@ -141,17 +144,17 @@ function Dashboard() {
                 className={styles.diagramme}
                 options={{
                   maintainAspectRatio: false,
-                  tooltips: {
-                    callbacks: {
-                      label: function (tooltipItem, data) {
-                        let value = data.datasets[0].data[tooltipItem.index];
-                        value = value.toString();
-                        value = value.split(/(?=(?:...)*$)/);
-                        value = value.join(".");
-                        return value + " €";
-                      },
-                    },
-                  },
+                  // tooltips: {
+                  //   // callbacks: {
+                  //   //   label: function (tooltipItem, data) {
+                  //   //     let value = data.datasets[0].data[tooltipItem.index];
+                  //   //     value = value.toString();
+                  //   //     value = value.split(/(?=(?:...)*$)/); // ?????????
+                  //   //     value = value.join(".");
+                  //   //     return value + " €";
+                  //   //   },
+                  //   // },
+                  // },
                 }}
               />
             </div>
@@ -161,17 +164,17 @@ function Dashboard() {
                 className={styles.diagramme}
                 options={{
                   maintainAspectRatio: false,
-                  tooltips: {
-                    callbacks: {
-                      label: function (tooltipItem, data) {
-                        let value = data.datasets[0].data[tooltipItem.index];
-                        value = value.toString();
-                        value = value.split(/(?=(?:...)*$)/);
-                        value = value.join(".");
-                        return value + " €";
-                      },
-                    },
-                  },
+                  // tooltips: {
+                  //   callbacks: {
+                  //     label: function (tooltipItem, data) {
+                  //       let value = data.datasets[0].data[tooltipItem.index];
+                  //       value = value.toString();
+                  //       value = value.split(/(?=(?:...)*$)/);
+                  //       value = value.join(".");
+                  //       return value + " €";
+                  //     },
+                  //   },
+                  // },
                 }}
               />
             </div>
@@ -193,7 +196,7 @@ function Dashboard() {
             </div>
           </div>
           <div className={styles.graphicBar}>
-            <Bar data={dataBarCa} options={optionsBarCa} />
+            <Bar data={dataBarCa}/>
           </div>
         </div>
       </div>

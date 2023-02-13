@@ -196,23 +196,17 @@ function Contrat() {
     console.log("JE SUIS LE FICHIER", file);
 
     // Mise à jour du lien dans la base de données
-    const data = {
-      links: file.url,
-    };
 
-    const response = await fetch(
-      `${BACKEND_ADDRESS}/contrat/updateLink/${dataContrat._id}`,
+    const data = {links: file.url,};
+    const response = await fetch(`${BACKEND_ADDRESS}/contrat/updateLink/${dataContrat._id}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: {"Content-Type": "application/json",},
         body: JSON.stringify(data),
       }
     );
     const updatedContrat = await response.json();
     console.log(updatedContrat);
-
     // Mise à jour de l'état du composant
     setRefresh(!refresh);
     setShowModalDoc(false);
@@ -221,9 +215,7 @@ function Contrat() {
   const handleDelete = async () => {
     const response = await fetch(
       `${BACKEND_ADDRESS}/contrat/${dataContrat._id}`,
-      {
-        method: "DELETE",
-      }
+      {method: "DELETE",}
     );
     const data = await response.json();
     if (data.result) {
